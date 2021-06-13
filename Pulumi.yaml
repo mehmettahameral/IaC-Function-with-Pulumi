@@ -1,0 +1,3 @@
+name: IaC-Function-with-Pulumi
+runtime: dotnet
+description: Infrastructure-as-a-Code Azure Functions by using Pulumi

@@ -1,0 +1,43 @@
+name: pulumi up
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  # Also trigger on page_build, as well as release created events
+  page_build:
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
+  workflow_dispatch:
+    
+
+env:
+  NETCORE_VERSION: ${{ secrets.NETCORE_VERSION }} #3.1
+  PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+  PULUMI_STACK_NAME: ${{ secrets.PULUMI_STACK_NAME }} #dev
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }} 
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }} 
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }} 
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }} 
+
+jobs:
+  up:
+    name: Pulumi up
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup DotNet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
+      - name: Install pulumi and up
+        uses: pulumi/action-install-pulumi-cli@v1.0.2
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          stack-name: ${{ env.PULUMI_STACK_NAME}}
